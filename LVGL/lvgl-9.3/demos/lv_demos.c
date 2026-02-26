@@ -59,7 +59,5 @@ u32 lv_demos(u16 argc, u8  *argv[]) {
 
 CMD_TABLE_DATA_SECTION
 const COMMAND_TABLE cmd_table_lv_demos[] = {
-    {
-        (const u8 *)"lv_demos",  1, lv_demos, (const u8 *)"\t lv_demos\n"
-    },
+    {"lv_demos", lv_demos},
 };

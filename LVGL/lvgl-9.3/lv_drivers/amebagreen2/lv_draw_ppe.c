@@ -127,6 +127,8 @@ static bool _ppe_image_transform_supported(const lv_draw_image_dsc_t *draw_dsc)
                         draw_dsc->scale_y != LV_SCALE_NONE;
     if (has_recolor && has_transform) return false;  // Can't do both
 
+    if (img_dsc->header.w < PPE_BLOCK_ALIGN || img_dsc->header.h < PPE_BLOCK_ALIGN) return false;
+
     if (draw_dsc->rotation % 900 != 0) return false;  // Only 90° multiples
 
     if (draw_dsc->blend_mode != LV_BLEND_MODE_NORMAL) return false; //Unspupport
@@ -135,6 +137,8 @@ static bool _ppe_image_transform_supported(const lv_draw_image_dsc_t *draw_dsc)
     if (has_transform && (img_dsc->header.w % PPE_BLOCK_ALIGN || img_dsc->header.h % PPE_BLOCK_ALIGN)) {
         return false;
     }
+
+    if (!_ppe_src_cf_supported(img_dsc->header.cf)) return false;
 
     return true;
 }
@@ -414,12 +418,7 @@ static void _ppe_img_draw_core(lv_draw_task_t *t,
     src_buf += ((blend_area.x1 - img_coords->x1) * src_px_size) >> 3;
     lv_area_move(&blend_area, -layer->buf_area.x1, -layer->buf_area.y1);
 
-    uint32_t dest_offset = (blend_area.y1 * draw_buf->header.w + blend_area.x1) * bytes_per_pixel;
-    if (scale_x > 1.0f || scale_y > 1.0f) {
-        int32_t x1 = scale_x > 1.0f ? (img_width - scale_width) / 2 : 0;
-        int32_t y1 = scale_y > 1.0f ? (img_height - scale_height) / 2 : 0;
-        dest_offset = ((blend_area.y1 + y1) *draw_buf->header.w + blend_area.x1 + x1) * bytes_per_pixel;
-    }
+    int32_t dest_offset = LV_MAX((blend_area.y1 * draw_buf->header.w + blend_area.x1) * bytes_per_pixel, 0);
 
 #if TIME_DEBUG
     uint64_t start, end, time_used;
@@ -657,8 +656,15 @@ void lv_draw_ppe_configure_and_start_transfer(lv_draw_ppe_configuration_t *ppe_d
     Result_Layer.bg_src         = PPE_BACKGROUND_SOURCE_LAYER1;
     Result_Layer.line_len       = ppe_draw_conf->dest_header->stride;
     Result_Layer.const_bg       = 0xFFFFFFFF;
-    Result_Layer.blk_width      = Result_Layer.pic_width;
-    Result_Layer.blk_height     = Result_Layer.pic_height;
+
+    if (Input_Layer.angle == 90 || Input_Layer.angle == 270) {
+        Result_Layer.blk_width      = 16;
+        Result_Layer.blk_height     = 16;
+    } else {
+        Result_Layer.blk_width      = Result_Layer.pic_width;
+        Result_Layer.blk_height     = Result_Layer.pic_height;
+    }
+
     PPE_InitResultLayer(&Result_Layer);
     DCache_CleanInvalidate(0xFFFFFFFF, 0xFFFFFFFF);
 
