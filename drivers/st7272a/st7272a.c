@@ -17,6 +17,7 @@
 
 #include "st7272a.h"
 #include "os_wrapper.h"
+#include "stdlib.h"
 
 static ST7272AVBlankCallback *g_callback = NULL;
 static void *g_data = NULL;
