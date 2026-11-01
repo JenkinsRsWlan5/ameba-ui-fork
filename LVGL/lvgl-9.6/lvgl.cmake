@@ -8,6 +8,8 @@ set(public_libraries)
 #----------------------------------------#
 # Component public part, user config begin
 ameba_list_append(public_includes
+    lvgl/include
+    lvgl/include/lvgl
     lvgl/src
     lvgl/src/core
     lvgl/src/display
@@ -52,12 +54,7 @@ file(GLOB_RECURSE LVGL_SRCS
     "lvgl/src/libs/libjpeg_turbo/lv_libjpeg_turbo.c"
 )
 
-# 9.5 rewrote the SW NEON blend from hand-written assembly (9.3's lv_blend_neon.S)
-# to C intrinsics, which the GLOB above would pull in on every SoC. Drop them and
-# add them back under the same condition 9.3 uses. This only decides whether the
-# files reach the compiler; whether they emit code is decided separately by
-# LV_USE_DRAW_SW_ASM in config/<soc>/lv_conf.h (only amebasmart selects NEON).
-list(FILTER LVGL_SRCS EXCLUDE REGEX "lvgl/src/draw/sw/blend/neon/.*\\.c$")
+list(FILTER LVGL_SRCS EXCLUDE REGEX "lvgl/src/draw/sw/blend/(neon|helium|arm2d|riscv_v|sve2)/.*\\.c$")
 
 if(CONFIG_AMEBASMART AND CONFIG_NEON)
     ameba_list_append(LVGL_SRCS

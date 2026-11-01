@@ -20,12 +20,13 @@
 #include "jpegdecapi.h"
 #include "ppapi.h"
 
-#include "src/draw/lv_image_decoder_private.h"
-#include "src/core/lv_global.h"
-#include "src/stdlib/lv_mem.h"
-#include "src/misc/lv_fs.h"
-#include "src/misc/lv_log.h"
-#include "src/misc/lv_assert.h"
+#include "lvgl.h"
+
+#if LVGL_VERSION_MAJOR > 9 || (LVGL_VERSION_MAJOR == 9 && LVGL_VERSION_MINOR >= 6)
+    #include "src/image/lv_image_decoder_private.h"
+#else
+    #include "src/draw/lv_image_decoder_private.h"
+#endif
 
 #define DECODER_NAME "JPEG_RTK"
 

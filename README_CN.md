@@ -88,5 +88,5 @@ ameba.py build
 
 ## 💬 反馈
 
-* 如果你在开发过程中有任何问题或建议，请登录 [Real-AIOT 论坛](https://forum.real-aiot.com/) 给我们反馈。
+* 如果你在开发过程中有任何问题或建议，请登录 [Ameba AIoT 论坛](https://forum.amebaiot.com/) 给我们反馈。
 * 如果你发现了错误或需要新功能，请先[查看 GitHub Issues](https://github.com/Ameba-AIoT/ameba-ui/issues)，确保该问题尚未被提交。

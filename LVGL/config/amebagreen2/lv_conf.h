@@ -31,6 +31,8 @@
 
 #define LV_COLOR_16_SWAP 0
 
+#define LV_COLOR_FORMAT_DEFAULT LV_COLOR_FORMAT_XRGB8888
+
 /*=========================
    STDLIB WRAPPER SETTINGS
  *=========================*/
@@ -333,8 +335,12 @@
 #define LV_USE_ASSERT_OBJ           0   /*Check the object's type and existence (e.g. not deleted). (Slow)*/
 
 /*Add a custom handler when assert happens e.g. to restart the MCU*/
-#define LV_ASSERT_HANDLER_INCLUDE <stdint.h>
 #define LV_ASSERT_HANDLER while(1);   /*Halt by default*/
+
+#define LV_USE_CHECK_ARG             0
+#define LV_USE_CHECK_OBJ_CLASSTYPE   0
+#define LV_USE_CHECK_OBJ_VALIDITY    0
+#define LV_USE_CHECK_OBJ_PARENT_LINK 0
 
 /*-------------
  * Debug
@@ -391,16 +397,8 @@
  * LVGL Pro generated code, which calls lv_obj_set_name_static(), lands. */
 #define LV_USE_OBJ_NAME         0
 
-/* LVGL 9.5 removed the XML engine. Nothing in this tree uses XML; the define is
- * kept explicit so that LVGL Pro generated code, whose `#if LV_USE_XML` guards
- * would otherwise read an undefined macro, still compiles. On 9.3 the option
- * does exist and its built-in default is already 0, so this is a no-op there. */
 #define LV_USE_XML              0
 
-/* Gates src/others/translation/ on 9.5. Upstream default is 0 and nothing in
- * this tree calls lv_translation_*, so keep it off. Flip to 1 when an LVGL Pro
- * generated UI that needs translations lands. 9.3 has no such option, so this
- * define is simply unused there. */
 #define LV_USE_TRANSLATION      0
 
 /* Automatically assign an ID when obj is created */

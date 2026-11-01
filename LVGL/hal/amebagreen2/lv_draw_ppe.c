@@ -21,30 +21,32 @@
 #include "lvgl_private.h"
 #include "lv_draw_ppe.h"
 
-/* LVGL 9.5 moved or renamed a few draw internals this file relies on.
- * Every version difference of this file is confined to this block. */
-#if LVGL_VERSION_MAJOR > 9 || (LVGL_VERSION_MAJOR == 9 && LVGL_VERSION_MINOR >= 5)
-#define PPE_LVGL_GE_9_5         1
+#if LVGL_VERSION_MAJOR > 9 || (LVGL_VERSION_MAJOR == 9 && LVGL_VERSION_MINOR >= 6)
+#define PPE_LVGL_GE_9_6         1
 #define PPE_TASK_STATE_DONE     LV_DRAW_TASK_STATE_FINISHED
 #else
-#define PPE_LVGL_GE_9_5         0
+#define PPE_LVGL_GE_9_6         0
 #define PPE_TASK_STATE_DONE     LV_DRAW_TASK_STATE_READY
 #endif
 
+#if !PPE_LVGL_GE_9_6
 #include "src/misc/lv_types.h"
 #include "src/draw/lv_draw.h"
+#endif
 #include "src/draw/lv_draw_private.h"
 #include "src/misc/lv_area_private.h"
 #include "src/draw/lv_draw_image_private.h"
-#include "src/draw/lv_image_decoder_private.h"
-#if PPE_LVGL_GE_9_5
-#include "src/draw/lv_draw_mask.h"          /* 9.5: lv_draw_mask_rect_dsc_t became public */
+#if PPE_LVGL_GE_9_6
+#include "src/image/lv_image_decoder_private.h"
 #else
+#include "src/draw/lv_image_decoder_private.h"
 #include "src/draw/lv_draw_mask_private.h"
 #endif
 #include "src/draw/sw/blend/lv_draw_sw_blend_private.h"
 #include "src/draw/sw/lv_draw_sw.h"
+#if !PPE_LVGL_GE_9_6
 #include "src/draw/lv_draw_image.h"
+#endif
 
 #if LV_USE_DRAW_PPE
 #if LV_USE_PARALLEL_DRAW_DEBUG
@@ -485,14 +487,13 @@ static void lv_draw_ppe_image(lv_draw_task_t *t, const lv_draw_image_dsc_t *draw
     const lv_area_t *coords)
 {
     if(!draw_dsc->tile) {
-#if PPE_LVGL_GE_9_5
-        /* 9.5 added a trailing "decoded area" argument to both helpers. */
+#if PPE_LVGL_GE_9_6
         lv_draw_image_normal_helper(t, draw_dsc, coords, _ppe_img_draw_core, NULL);
 #else
         lv_draw_image_normal_helper(t, draw_dsc, coords, _ppe_img_draw_core);
 #endif
     } else {
-#if PPE_LVGL_GE_9_5
+#if PPE_LVGL_GE_9_6
         lv_draw_image_tiled_helper(t, draw_dsc, coords, _ppe_img_draw_core, NULL);
 #else
         lv_draw_image_tiled_helper(t, draw_dsc, coords, _ppe_img_draw_core);

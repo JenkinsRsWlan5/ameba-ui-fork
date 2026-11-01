@@ -88,5 +88,5 @@ For users who can access [Gitee](https://gitee.com), a mirror is available at [a
 
 ## 💬 Feedback
 
-* For questions or suggestions during development, visit the [Real-AIOT Forum](https://forum.real-aiot.com/).
+* For questions or suggestions during development, visit the [Ameba AIoT Forum](https://forum.amebaiot.com/).
 * For bugs or feature requests, [check the GitHub Issues](https://github.com/Ameba-AIoT/ameba-ui/issues). Please check existing issues before opening a new one.
